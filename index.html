@@ -11,74 +11,105 @@
 		.red {
 			color: #FF0000;
 		}
+		.none {
+			display: none;
+		}
+		body {
+			background: white;
+		}
+		p {
+			margin: 0 0 5px;
+		}
+		.article {
+			background: rgba(128, 128, 128, 0.19);
+		}
+		.news_author {
+			text-decoration: underline;
+			color: darkslategrey;
+		}
+		.news__count {
+			margin: 10px 0 0;
+			display: block;
+		}
 	</style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-	const myNews = [
-		{
-			id: 1,
-			author: 'Саша Печкин',
-			text: 'В четверг, четвертого числа...'
-		},
-		{
-			id: 2,
-			author: 'Просто Вася',
-			text: 'Считаю, что $ должен стоить 35 рублей!'
-		},
-		{
-			id: 3,
-			author: 'Max Frontend',
-			text: 'Прошло 2 года с прошлых учебников, а $ так и не стоит 35'
-		},
-		{
-			id: 4,
-			author: 'Гость',
-			text: 'Бесплатно. Без смс, про реакт, заходи - https://maxpfrontend.ru'
-		}
-	];
-	class News extends React.Component {
-		render () {
-			const { data } = this.props
-			let newsTemplate
-			if (data.length < 5) {
-				newsTemplate = this.props.data.map(function(item) {
-					return (
-						<div key={item.id}>
-							<p className="news__author">{item.author}:</p>
-							<p className="news__text">{item.text}</p>
-						</div>
-					)
-				})
-				console.log(data)
-				console.log(newsTemplate)
-				return (
-					<div className="news">
-						{newsTemplate}
-					</div>
-				)
-			} else {
-				newsTemplate = <p>К сожалению новостей нет</p>
-			}
-		}
-	}
-	const Comments = () => {
-		return <p>Нет новостей - комментировать нечего.</p>
-	}
-	const App = () => {
-		return (
-			<React.Fragment>
-				<News data={myNews}/>
-				<Comments />
-			</React.Fragment>
-		)
-	}
+  const myNews = [
+    {
+      id: 1, // добавили id
+      author: 'Саша Печкин',
+      text: 'В четверг, четвертого числа...'
+    },
+    {
+      id: 2,
+      author: 'Просто Вася',
+      text: 'Считаю, что $ должен стоить 35 рублей!'
+    },
+    {
+      id: 3,
+      author: 'Max Frontend',
+      text: 'Прошло 2 года с прошлых учебников, а $ так и не стоит 35'
+    },
+    {
+      id: 4,
+      author: 'Гость',
+      text: 'Бесплатно. Без смс, про реакт, заходи - https://maxpfrontend.ru'
+    }
+  ];
+  class News extends React.Component {
+    renderNews = () => {
+      const { data } = this.props;
+	  let newsTemplate = null;
 
-	ReactDOM.render(
-		<App />,
-		document.getElementById('root')
-	);
+      if (data.length) {
+        newsTemplate = data.map(function(item) {
+          return <Article key={item.id} data={item}/>
+        })
+      } else {
+        newsTemplate = <p>К сожалению новостей нет</p>
+      }
+
+      return newsTemplate
+	};
+
+    render() {
+      const { data } = this.props; // аналогично записи const data = this.props.data
+
+      return (
+        <div className="news">
+          {this.renderNews()}
+          {
+            data.length ? <strong className="news__count">Всего новостей: {data.length}</strong> : null
+          }
+        </div>
+      );
+    }
+  }
+  class Article extends React.Component {
+    render() {
+      const { author, text } = this.props.data;
+	  return (
+	    <div className="article">
+			<p className="news_author">{author}</p>
+			<p className="news_text">{text}</p>
+		</div>
+	  )
+	}
+  }
+  const App = () => {
+    return (
+      <React.Fragment>
+		  <h3>Новости</h3>
+        <News data={myNews}/>
+      </React.Fragment>
+    )
+  };
+  ReactDOM.render(
+    <App />,
+    document.getElementById('root')
+  );
 </script>
 
 </body>
